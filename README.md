@@ -33,6 +33,8 @@ This was merged after HarfBuzz version 1.9.0 .
 You need to build and install harfbuzz with introspection (`./configure --with-gobject --enable-introspection`), and have pygobject
 (https://wiki.gnome.org/Projects/PyGObject). The latter should be readily available as pre-packaged on many systems. 
 
+The drawing code requires freetype-py and pycairo, and uses PIL to display the PNG image.
+
 Highly recommended is pgi-docgen, ( see the HarfBuzz example in https://github.com/pygobject/pgi-docgen/pull/172 )
 to generate the HarfBuzz python API reference documentation. API doc
 generation from gobject doc tool is at best described as both incorrect and incomplete
