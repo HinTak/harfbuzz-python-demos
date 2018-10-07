@@ -5,7 +5,7 @@ based `hb-view` utilility, with some additional and extra functionality inspired
 
 Specifically, it does ink-box tight-cropping by default, and output PNG images. It also calculates margin adjustments, so that you
 can use upstream HarfBuzz's C++ based `hb-view` utilility to generate vector images with tight-cropping.
-Upstream HarfBuzz's C++ based `hb-view` utilility uses descender/ascender, which could be substantially larger or smaller than
+Upstream HarfBuzz's C++ based `hb-view` utilility uses descender/ascender + advance-width , which could be substantially larger or smaller than
 the ink area.
 
 For example, for the Persian "HarfBuzz" image below, `hb-view.py` would output this before generating the PNG image:
@@ -20,7 +20,7 @@ You can cut-and-paste and run C++ `hb-view` with `--margin="-21.25 -1.625 3.75 3
 if you need a vector image.
 
 There is an option for `hb-view.py` to use descender/ascender . The drawing code is not a step-by-step translation of C code to
-pycairo python code, so in both kinds of outputs (ink-box based or descender/ascender based), sub-pixel differences are expected.
+pycairo python code, so in both kinds of outputs (ink-box based or descender/ascender+advance-width based), sub-pixel differences are expected.
 However, differences should not be beyond fractional pixels.
 
 See below for output demos.
@@ -57,9 +57,9 @@ Here is the ink-box image from the python tool:
 
 ![upstream](images/sanskrit-ligature2.png)
 
-On the other hand, Arabic writing can go beyond the area declared by ascender/decenders.
+On the other hand, Arabic writing can go beyond the area declared by ascender/descenders and advance width.
 ( `--background="#000000" --foreground="#FFFFFF" --margin=0,0,0,0`). The uneven margins on the 4 directions
-would also be difficult to set manually. Here is the Persian word for "HarfBuzz":
+would also be difficult to set manually. Here is the Persian word for "HarfBuzz", note the clipping below and on the left-side:
 
 ![upstream](images/arabic-cropped.png)
 
