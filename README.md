@@ -16,7 +16,7 @@ ink box: 695.25 264.875
 margin: -21.25 -1.625 3.75 35.125
 ```
 
-You can cut-and-paste and run C++ `hb-view` with `--margin="-21.25 -1.625 3.75 35.125"` to get a vector eps/svg image of the ink-box area,
+You can cut-and-paste this and run C++ `hb-view` with `--margin="-21.25 -1.625 3.75 35.125"` to get a vector eps/svg image of the ink-box area,
 if you need a vector image.
 
 There is an option for `hb-view.py` to use descender/ascender . The drawing code is not a step-by-step translation of C code to
