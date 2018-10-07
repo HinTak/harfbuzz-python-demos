@@ -1,7 +1,8 @@
 # HarfBuzz python demos
 
 This project currently has one script: `hb-view.py`, a re-implementation of some of the functionalilty of upstream HarfBuzz's C++
-based `hb-view` utilility, with some additional and extra functionality inspired by and taken from `hb-shape`.
+based `hb-view` utilility, with some additional and extra functionality inspired by and taken from `hb-shape`. It uses pygobject and
+HarfBuzz's gobject binding, which is maintained within HarfBuzz.
 
 Specifically, it does ink-box tight-cropping by default, and output PNG images. It also calculates margin adjustments, so that you
 can use upstream HarfBuzz's C++ based `hb-view` utilility to generate vector images with tight-cropping.
@@ -19,8 +20,8 @@ margin: -21.25 -1.625 3.75 35.125
 You can cut-and-paste this and run C++ `hb-view` with `--margin="-21.25 -1.625 3.75 35.125"` to get a vector eps/svg image of the ink-box area,
 if you need a vector image.
 
-There is an option for `hb-view.py` to use descender/ascender . The drawing code is not a step-by-step translation of C code to
-pycairo python code, so in both kinds of outputs (ink-box based or descender/ascender+advance-width based), sub-pixel differences are expected.
+There is an option for `hb-view.py` to use descender/ascender . The drawing code is not a step-by-step translation of C Cairo code to
+pycairo Python code, so in both kinds of outputs (ink-box based or descender/ascender+advance-width based), sub-pixel differences are expected.
 However, differences should not be beyond fractional pixels.
 
 See below for output demos.
@@ -68,3 +69,10 @@ would also be difficult to set manually. Here is the Persian word for "HarfBuzz"
 Here is the ink-box image from the python tool:
 
 ![upstream](images/arabic-boxed.png)
+
+More than two years before the Devanagari/Arabic activities, I first encountered https://github.com/behdad/harfbuzz/issues/79 with CJK fonts.
+When one is generating an image of CJK glyphs, one expect equal margins around the square shapes.
+I was surprised by the empty space below, though it is understandable that many CJK fonts have Latin glyphs and have a descender area.
+
+The C++ `hb-view` also has an inconsistency, special-casing `ansi` output: `ansi` drawings skips blank ascender/descender areas above and
+below the ink-box.
