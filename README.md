@@ -1,7 +1,7 @@
 # HarfBuzz python demos
 
 This project currently has one script: `hb-view.py`, a re-implementation of some of the functionalilty of upstream HarfBuzz's C++
-based `hb-view` utilility, with some extra functionality inspired by and taken from `hb-shape`.
+based `hb-view` utilility, with some additional and extra functionality inspired by and taken from `hb-shape`.
 
 Specifically, it does ink-box tight-cropping by default, and output PNG images. It also calculates margin adjustments, so that you
 can use upstream HarfBuzz's C++ based `hb-view` utilility to generate vector images with tight-cropping.
@@ -19,11 +19,11 @@ See below for output demos.
 The descender/ascender code depends on a recent bug fix ( https://github.com/harfbuzz/harfbuzz/pull/1209 ) to harfbuzz from me.
 This was merged after HarfBuzz version 1.9.0 .
 
-You need to build and install harfbuzz with introspection (`./configure --with-gobject --enable-introspection`), and pygobject
+You need to build and install harfbuzz with introspection (`./configure --with-gobject --enable-introspection`), and have pygobject
 (https://wiki.gnome.org/Projects/PyGObject). The latter should be readily available as pre-packaged on many systems. 
 
-Highly recommended is pgi-docgen, with the HarfBuzz example
-( https://github.com/pygobject/pgi-docgen/pull/172 ) to generate the HarfBuzz python API reference documentation. API doc
+Highly recommended is pgi-docgen, ( see the HarfBuzz example in https://github.com/pygobject/pgi-docgen/pull/172 )
+to generate the HarfBuzz python API reference documentation. API doc
 generation from gobject doc tool is at best described as both incorrect and incomplete
 ( https://gitlab.gnome.org/GNOME/gobject-introspection/issues/235 ) .
 
