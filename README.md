@@ -8,6 +8,17 @@ can use upstream HarfBuzz's C++ based `hb-view` utilility to generate vector ima
 Upstream HarfBuzz's C++ based `hb-view` utilility uses descender/ascender, which could be substantially larger or smaller than
 the ink area.
 
+For example, for the Persian "HarfBuzz" image below, `hb-view.py` would output this before generating the PNG image:
+
+```
+default: 693.75 314.375
+ink box: 695.25 264.875
+margin: -21.25 -1.625 3.75 35.125
+```
+
+You can cut-and-paste and run C++ `hb-view` with `--margin="-21.25 -1.625 3.75 35.125"` to get a vector eps/svg image of the ink-box area,
+if you need a vector image.
+
 There is an option for `hb-view.py` to use descender/ascender . The drawing code is not a step-by-step translation of C code to
 pycairo python code, so in both kinds of outputs (ink-box based or descender/ascender based), sub-pixel differences are expected.
 However, differences should not be beyond fractional pixels.
