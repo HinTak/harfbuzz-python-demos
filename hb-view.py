@@ -160,7 +160,7 @@ face = Face(sys.argv[1])
 face.set_char_size( 256*64 )
 slot = face.glyph
 
-Z = ImageSurface(FORMAT_A8, round(width+0.5), round(height+0.5))
+Z = ImageSurface(FORMAT_A8, int(round(width+0.5)), int(round(height+0.5)))
 ctx = Context(Z)
 
 # Second pass for actual rendering
