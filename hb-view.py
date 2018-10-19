@@ -43,7 +43,7 @@ def tounicode(s, encoding='utf-8'):
     else:
         return s
 
-if (hb.version_atleast(1,9,0)):
+if (hb.version_atleast(2,0,0)):
     pass
 else:
     raise RuntimeError('HarfBuzz too old')
