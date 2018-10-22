@@ -66,7 +66,10 @@ font = hb.font_create (face)
 upem = hb.face_get_upem (face)
 del face
 hb.font_set_scale (font, upem, upem)
+# select "ft" or "ot" for get the right margins - see:
 # https://github.com/harfbuzz/harfbuzz/issues/1248
+# https://github.com/harfbuzz/harfbuzz/issues/1262
+# and also
 # https://github.com/harfbuzz/harfbuzz/issues/537
 hb.ft_font_set_funcs(font)
 #hb.ot_font_set_funcs (font)
