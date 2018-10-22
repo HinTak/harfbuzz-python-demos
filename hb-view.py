@@ -23,6 +23,10 @@ from __future__ import print_function, division, absolute_import
 # Change this to True to get the default uptream size
 emulate_default = False
 
+# wantTTB is auto-on for CJK, and wantRotate is on for Mongolian/Phags Pa.
+wantTTB = False
+wantRotate = False
+
 import sys
 import array
 import gi
@@ -62,8 +66,10 @@ font = hb.font_create (face)
 upem = hb.face_get_upem (face)
 del face
 hb.font_set_scale (font, upem, upem)
-#hb.ft_font_set_funcs (font)
-hb.ot_font_set_funcs (font)
+# https://github.com/harfbuzz/harfbuzz/issues/1248
+# https://github.com/harfbuzz/harfbuzz/issues/537
+hb.ft_font_set_funcs(font)
+#hb.ot_font_set_funcs (font)
 
 buf = hb.buffer_create ()
 class Debugger(object):
@@ -93,6 +99,11 @@ else:
 
 
 hb.buffer_guess_segment_properties (buf)
+if ((hb.buffer_get_script(buf) == hb.script_t.MONGOLIAN) or (hb.buffer_get_script(buf) == hb.script_t.PHAGS_PA)):
+    wantRotate = True
+if (hb.buffer_get_script(buf) == hb.script_t.HAN):
+    hb.buffer_set_direction(buf, hb.direction_t.TTB)
+    wantTTB = True
 
 hb.shape (font, buf, [])
 font_extents = hb.font_get_extents_for_direction(font, hb.buffer_get_direction(buf))
@@ -124,24 +135,57 @@ for info,pos in zip(infos, positions):
 
     (results, extents) = hb.font_get_glyph_extents(font, info.codepoint)
     glyph_extents.append(extents)
-    min_ix = min(min_ix, x + extents.x_bearing)
-    max_ix = max(max_ix, x + extents.x_bearing + extents.width)
-    max_iy = max(max_iy, y + extents.y_bearing)
-    min_iy = min(min_iy, y + extents.y_bearing + extents.height)
+    if ((extents.width != 0) and (extents.height !=0)):
+        # don't want invisible glyph to pin the ink box
+        # https://github.com/harfbuzz/harfbuzz/issues/1208
+        # https://github.com/harfbuzz/harfbuzz/issues/1216
+        min_ix = min(min_ix, x + extents.x_bearing)
+        max_ix = max(max_ix, x + extents.x_bearing + extents.width)
+        max_iy = max(max_iy, y + extents.y_bearing)
+        min_iy = min(min_iy, y + extents.y_bearing + extents.height)
     x += x_advance
     y += y_advance
 
 def sc(value):
         return (value * 256)/upem
-print("default:", sc(x) + 32, sc(font_height) + 32)
+
+class Margin:
+    def __init__(self, top, right, bottom, left):
+        self.top = top
+        self.right = right
+        self.bottom = bottom
+        self.left = left
+
+if (not wantTTB):
+    # (top,right,bottom,left)
+    # default is: font_extents.ascender, x, font_extents.descender, 0
+    _margin = Margin(sc(max_iy - font_extents.ascender),
+                     sc(max_ix - x),
+                     sc(font_extents.descender - font_extents.line_gap - min_iy),
+                     -sc(glyph_extents[0].x_bearing))
+
+    print("default:", sc(x) + 32, sc(font_height) + 32)
+else:
+    # (top,right,bottom,left)
+    # default is: -positions[0].y_offset, font_height, y - positions[0].y_offset, 0
+    _margin = Margin(sc(max_iy + positions[0].y_offset),
+                     sc(max_ix - font_height),
+                     sc(y - positions[-1].y_offset - min_iy),
+                     -sc(min_ix))
+
+    print("default:", sc(font_height) + 32, sc(-y) + 32)
+
 print("ink box:", sc(max_ix - min_ix), sc(max_iy - min_iy))
 print("margin:",
-      sc(max_iy - font_extents.ascender),
-      sc(max_ix - x),
-      sc(font_extents.descender - font_extents.line_gap - min_iy),
-      -sc(min_ix))
+      _margin.top,
+      _margin.right,
+      _margin.bottom,
+      _margin.left)
+margin = "--margin=%f %f %f %f" % (_margin.top,
+                                   _margin.right,
+                                   _margin.bottom,
+                                   _margin.left)
 del font
-
 
 (width,height) = (sc(max_ix - min_ix), sc(max_iy - min_iy))
 if (emulate_default):
@@ -152,35 +196,41 @@ if (emulate_default):
 
 from freetype import *
 
-from cairo import Context, ImageSurface, FORMAT_A8
+# cairo.Matrix shadows freetype.Matrix
+from cairo import Context, ImageSurface, FORMAT_A8, Matrix
 from bitmap_to_surface import make_image_surface
 from PIL import Image
 
 face = Face(sys.argv[1])
 face.set_char_size( 256*64 )
-slot = face.glyph
 
-Z = ImageSurface(FORMAT_A8, int(round(width+0.5)), int(round(height+0.5)))
+if (not wantRotate):
+    Z = ImageSurface(FORMAT_A8, int(round(width+0.5)), int(round(height+0.5)))
+else:
+    Z = ImageSurface(FORMAT_A8, int(round(height+0.5)), int(round(width+0.5)))
 ctx = Context(Z)
 
+if (wantRotate):
+    ctx.set_matrix(Matrix(xx=0.0,xy=-1.0,yx=1.0,yy=0.0,x0=height))
 # Second pass for actual rendering
-x, y = -sc(glyph_extents[0].x_bearing), 0
-baseline = -sc(min_iy)
+x, y = -sc(glyph_extents[0].x_bearing), height + sc(min_iy)
 if (emulate_default):
     x = 16
-    baseline = sc(- font_extents.descender + font_extents.line_gap) + 16
+    y = sc(font_extents.asscender) + 16
+if (wantTTB):
+    x = -sc(glyph_extents[0].x_bearing) + min_ix
+    y = sc(glyph_extents[0].y_bearing)
 for info,pos,extent in zip(infos, positions, glyph_extents):
     face.load_glyph(info.codepoint)
-    bitmap = slot.bitmap
-    top = slot.bitmap_top
-    y = height-baseline-top
     x += sc(extent.x_bearing)
+    y -= sc(extent.y_bearing)
     # cairo does not like zero-width bitmap from the space character!
-    if (bitmap.width > 0):
+    if (face.glyph.bitmap.width > 0):
         glyph_surface = make_image_surface(face.glyph.bitmap)
         ctx.set_source_surface(glyph_surface, x, y)
         ctx.paint()
     x += sc(pos.x_advance - extent.x_bearing)
+    y -= sc(pos.y_advance - extent.y_bearing)
 Z.flush()
 Z.write_to_png("hb-view.png")
 Image.open("hb-view.png").show()
