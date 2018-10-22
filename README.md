@@ -59,25 +59,27 @@ Sanskrit ligatures use diacritics both above and below the main shape extensivel
 The C++ tool's default (with `--background="#000000" --foreground="#FFFFFF"` for clarity) shows this, especially with the
 default margin of 16:
 
-![upstream](images/sanskrit-ligature1.png)
+![upstream-sanskrit](images/sanskrit-ligature1.png)
 
 Here is the ink-box image from the python tool:
 
-![upstream](images/sanskrit-ligature2.png)
+![py-sanskrit](images/sanskrit-ligature2.png)
 
 On the other hand, Arabic writing can go beyond the area declared by ascender/descenders and advance width.
 ( `--background="#000000" --foreground="#FFFFFF" --margin=0,0,0,0`). The uneven margins on the 4 directions
 would also be difficult to set manually. Here is the Persian word for "HarfBuzz", note the clipping below and on the left-side:
 
-![upstream](images/arabic-cropped.png)
+![upstream-arabic](images/arabic-cropped.png)
 
 Here is the ink-box image from the python tool:
 
-![upstream](images/arabic-boxed.png)
+![py-arabic](images/arabic-boxed.png)
 
 More than two years before the Devanagari/Arabic activities, I first encountered https://github.com/behdad/harfbuzz/issues/79 with CJK fonts.
 When one is generating an image of CJK glyphs, one expect equal margins around the square shapes.
 I was surprised by the empty space below, though it is understandable that many CJK fonts have Latin glyphs and have a descender area.
+
+Don't forget to checkout the [vertical layout](README.vertical.md) images too.
 
 The C++ `hb-view` also has an inconsistency, special-casing `ansi` output: `ansi` drawings skips blank ascender/descender areas above and
 below the ink-box.
