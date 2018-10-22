@@ -24,7 +24,7 @@ There is an option for `hb-view.py` to use descender/ascender . The drawing code
 pycairo Python code, so in both kinds of outputs (ink-box based or descender/ascender+advance-width based), sub-pixel differences are expected.
 However, differences should not be beyond fractional pixels.
 
-See below for output demos.
+See below for output demos, and [vertical layout](README.vertical.md) for vertical-layout examples.
 
 # Requirement
 
