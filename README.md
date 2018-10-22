@@ -17,7 +17,7 @@ ink box: 695.25 264.875
 margin: -21.25 -1.625 3.75 35.125
 ```
 
-You can cut-and-paste this and run C++ `hb-view` with `--margin="-21.25 -1.625 3.75 35.125"` to get a vector eps/svg image of the ink-box area,
+You can cut-and-paste this and run C++ `hb-view` with `--margin="-21.25 -1.625 3.75 35.125"` to get a vector svg/pdf/ps/eps image of the ink-box area,
 if you need a vector image.
 
 There is an option for `hb-view.py` to use descender/ascender . The drawing code is not a step-by-step translation of C Cairo code to
@@ -29,7 +29,7 @@ See below for output demos.
 # Requirement
 
 The descender/ascender code depends on a recent bug fix ( https://github.com/harfbuzz/harfbuzz/pull/1209 ) to harfbuzz from me.
-This was merged after HarfBuzz version 1.9.0 .
+This was merged after HarfBuzz version 1.9.0 and first appeared in 2.0.0 (released on Oct 18, 2018).
 
 You need to build and install harfbuzz with introspection (`./configure --with-gobject --enable-introspection`), and have pygobject
 (https://wiki.gnome.org/Projects/PyGObject). The latter should be readily available as pre-packaged on many systems. 
