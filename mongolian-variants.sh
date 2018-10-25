@@ -2,9 +2,15 @@
 mv hb-view.png ${1}-bare.png
 ./hb-view.py ${1}.ttf 'ᠴ ᠢ ᠩ ᠭ ᠢ ᠰ ᠬ ᠠ ᠭ ᠠ ᠨ'
 mv hb-view.png ${1}-form0.png
+./hb-view.py ${1}.ttf 'ᠴ᠋ᠢ᠋ᠩ᠋ᠭ᠋ᠢ᠋ᠰ᠋ ᠬ᠋ᠠ᠋ᠭ᠋ᠠ᠋ᠨ᠋'
+mv hb-view.png ${1}-join1.png
 ./hb-view.py ${1}.ttf 'ᠴ᠋ ᠢ᠋ ᠩ᠋ ᠭ᠋ ᠢ᠋ ᠰ᠋ ᠬ᠋ ᠠ᠋ ᠭ᠋ ᠠ᠋ ᠨ᠋'
 mv hb-view.png ${1}-form1.png
+./hb-view.py ${1}.ttf 'ᠴ᠌ᠢ᠌ᠩ᠌ᠭ᠌ᠢ᠌ᠰ᠌ ᠬ᠌ᠠ᠌ᠭ᠌ᠠ᠌ᠨ᠌'
+mv hb-view.png ${1}-join2.png
 ./hb-view.py ${1}.ttf 'ᠴ᠌ ᠢ᠌ ᠩ᠌ ᠭ᠌ ᠢ᠌ ᠰ᠌ ᠬ᠌ ᠠ᠌ ᠭ᠌ ᠠ᠌ ᠨ᠌'
 mv hb-view.png ${1}-form2.png
+./hb-view.py ${1}.ttf 'ᠴ᠍ᠢ᠍ᠩ᠍ᠭ᠍ᠢ᠍ᠰ᠍ ᠬ᠍ᠠ᠍ᠭ᠍ᠠ᠍ᠨ᠍'
+mv hb-view.png ${1}-join3.png
 ./hb-view.py ${1}.ttf 'ᠴ᠍ ᠢ᠍ ᠩ᠍ ᠭ᠍ ᠢ᠍ ᠰ᠍ ᠬ᠍ ᠠ᠍ ᠭ᠍ ᠠ᠍ ᠨ᠍'
 mv hb-view.png ${1}-form3.png
