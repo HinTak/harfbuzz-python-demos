@@ -28,7 +28,7 @@ Mongolian Writing
 
 ![mongolian](images/monbaiti-form0.png)
 
-Mongolian Baiti FVS1:
+Mongolian Baiti FVS1 (QA and A):
 
 ![mongolian](images/monbaiti-form1.png)
 
@@ -36,11 +36,11 @@ Mongolian Baiti FVS1:
 
 ![mongolian](images/NotoSansMongolian-Regular-form0.png)
 
-Noto Sans Mongolian FVS1:
+Noto Sans Mongolian FVS1 (GA, QA, A, NA):
 
 ![mongolian](images/NotoSansMongolian-Regular-form1.png)
 
-Noto Sans Mongolian FVS2:
+Noto Sans Mongolian FVS2 (GA, QA; GA same as FVS1):
 
 ![mongolian](images/NotoSansMongolian-Regular-form2.png)
 
@@ -48,7 +48,7 @@ Noto Sans Mongolian FVS2:
 
 ![mongolian](images/mngltitleotf-form0.png)
 
-Mongolian Title FVS1:
+Mongolian Title FVS1 (I, GA, QA, A, NA):
 
 ![mongolian](images/mngltitleotf-form1.png)
 
@@ -56,15 +56,15 @@ Mongolian Title FVS1:
 
 ![mongolian](images/mnglwhiteotf-form0.png)
 
-Mongolian White FVS1:
+Mongolian White FVS1 (I, GA, QA, A, NA) :
 
 ![mongolian](images/mnglwhiteotf-form1.png)
 
-Mongolian White FVS2:
+Mongolian White FVS2 (GA, QA):
 
 ![mongolian](images/mnglwhiteotf-form2.png)
 
-Mongolian White FVS3:
+Mongolian White FVS3 (GA, QA):
 
 ![mongolian](images/mnglwhiteotf-form3.png)
 
@@ -72,15 +72,15 @@ Mongolian White FVS3:
 
 ![mongolian](images/mnglwritingotf-form0.png)
 
-Mongolian Writing FVS1:
+Mongolian Writing FVS1 (I, GA, QA, A, NA):
 
 ![mongolian](images/mnglwritingotf-form1.png)
 
-Mongolian Writing FVS2:
+Mongolian Writing FVS2 (GA, QA):
 
 ![mongolian](images/mnglwritingotf-form2.png)
 
-Mongolian Writing FVS3:
+Mongolian Writing FVS3 (GA, QA):
 
 ![mongolian](images/mnglwritingotf-form3.png)
 
