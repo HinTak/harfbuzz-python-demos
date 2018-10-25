@@ -20,7 +20,7 @@ Mongolian Writing
 
 ![mongolian](images/mnglwritingotf-bare.png)
 
-(all the images on this page generated with this [script](mongolian-variants.sh)
+(all the images on this page generated with this [script](mongolian-variants.sh) ).
 
 # Free Variation Selectors
 
