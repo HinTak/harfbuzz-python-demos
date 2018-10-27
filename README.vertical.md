@@ -10,3 +10,7 @@ The below is from `c++ hb-view`. Note that the small kana is aligned differently
 quotation marks:
 
 ![c++ japanese](images/c++japanese.png)
+
+Here is a break-down of the individual letters in the Phags Pa example:
+
+![phags pa](images/phagspa-long.png)
