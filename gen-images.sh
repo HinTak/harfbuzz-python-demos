@@ -12,3 +12,5 @@ mv hb-view.png sanskrit-ligature2.png
 mv hb-view.png arabic-boxed.png
 ./hb-view.py LaylaThuluth.ttf  "حرف‌باز"
 mv hb-view.png another-harbuzz.png
+./hb-view.py phagspa.ttf 'ꡏ + ꡡ + ꡃ   ꡣ + ꡡ + ꡙ   ꡐ + ꡜ + ꡞ = ꡏꡡꡃ ꡣꡡꡙ ꡐꡜꡞ'
+mv hb-view.png phagspa-long.png
