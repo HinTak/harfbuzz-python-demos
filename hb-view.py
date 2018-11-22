@@ -119,9 +119,9 @@ x = 0
 y = 0
 glyph_extents = list()
 min_ix = upem
-max_ix = 0
+max_ix = -upem
 min_iy = upem
-max_iy = 0
+max_iy = -upem
 
 for info,pos in zip(infos, positions):
     gid = info.codepoint
