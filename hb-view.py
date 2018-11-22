@@ -142,10 +142,10 @@ for info,pos in zip(infos, positions):
         # don't want invisible glyph to pin the ink box
         # https://github.com/harfbuzz/harfbuzz/issues/1208
         # https://github.com/harfbuzz/harfbuzz/issues/1216
-        min_ix = min(min_ix, x + extents.x_bearing)
-        max_ix = max(max_ix, x + extents.x_bearing + extents.width)
-        max_iy = max(max_iy, y + extents.y_bearing)
-        min_iy = min(min_iy, y + extents.y_bearing + extents.height)
+        min_ix = min(min_ix, x + pos.x_offset + extents.x_bearing)
+        max_ix = max(max_ix, x + pos.x_offset + extents.x_bearing + extents.width)
+        max_iy = max(max_iy, y + pos.y_offset + extents.y_bearing)
+        min_iy = min(min_iy, y + pos.y_offset + extents.y_bearing + extents.height)
     x += x_advance
     y += y_advance
 
@@ -225,15 +225,15 @@ if (wantTTB):
     y = sc(glyph_extents[0].y_bearing)
 for info,pos,extent in zip(infos, positions, glyph_extents):
     face.load_glyph(info.codepoint)
-    x += sc(extent.x_bearing)
-    y -= sc(extent.y_bearing)
+    x += sc(extent.x_bearing + pos.x_offset)
+    y -= sc(extent.y_bearing + pos.y_offset)
     # cairo does not like zero-width bitmap from the space character!
     if (face.glyph.bitmap.width > 0):
         glyph_surface = make_image_surface(face.glyph.bitmap)
         ctx.set_source_surface(glyph_surface, x, y)
         ctx.paint()
-    x += sc(pos.x_advance - extent.x_bearing)
-    y -= sc(pos.y_advance - extent.y_bearing)
+    x += sc(pos.x_advance - extent.x_bearing - pos.x_offset)
+    y -= sc(pos.y_advance - extent.y_bearing - pos.y_offset)
 Z.flush()
 Z.write_to_png("hb-view.png")
 Image.open("hb-view.png").show()
