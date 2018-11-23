@@ -165,16 +165,16 @@ if (not wantTTB):
     _margin = Margin(sc(max_iy - font_extents.ascender),
                      sc(max_ix - x),
                      sc(font_extents.descender - font_extents.line_gap - min_iy),
-                     -sc(glyph_extents[0].x_bearing))
+                     -sc(glyph_extents[0].x_bearing + positions[0].x_offset))
 
     print("default:", sc(x) + 32, sc(font_height) + 32)
 else:
     # (top,right,bottom,left)
-    # default is: -positions[0].y_offset, font_height, y - positions[0].y_offset, 0
-    _margin = Margin(sc(max_iy + positions[0].y_offset),
-                     sc(max_ix - font_height),
-                     sc(y - positions[-1].y_offset - min_iy),
-                     -sc(min_ix))
+    # default is: 0, font_height + positions[0].x_offset, y, positions[0].x_offset
+    _margin = Margin(sc(max_iy),
+                     sc(max_ix - font_height - positions[0].x_offset),
+                     sc(y - min_iy),
+                     -sc(min_ix - positions[0].x_offset))
 
     print("default:", sc(font_height) + 32, sc(-y) + 32)
 
@@ -216,13 +216,13 @@ ctx = Context(Z)
 if (wantRotate):
     ctx.set_matrix(Matrix(xx=0.0,xy=-1.0,yx=1.0,yy=0.0,x0=height))
 # Second pass for actual rendering
-x, y = -sc(glyph_extents[0].x_bearing), height + sc(min_iy)
+x, y = -sc(glyph_extents[0].x_bearing + positions[0].x_offset), height + sc(min_iy)
 if (emulate_default):
     x = 16
     y = sc(font_extents.asscender) + 16
 if (wantTTB):
-    x = -sc(glyph_extents[0].x_bearing) + min_ix
-    y = sc(glyph_extents[0].y_bearing)
+    x = sc(max_ix)
+    y = sc(max_iy)
 for info,pos,extent in zip(infos, positions, glyph_extents):
     face.load_glyph(info.codepoint)
     x += sc(extent.x_bearing + pos.x_offset)
