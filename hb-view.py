@@ -74,6 +74,7 @@ hb.font_set_scale (font, upem, upem)
 hb.ft_font_set_funcs(font)
 #hb.ot_font_set_funcs (font)
 
+font_size = 256
 buf = hb.buffer_create ()
 class Debugger(object):
     def message (self, buf, font, msg, data, _x_what_is_this):
@@ -150,7 +151,7 @@ for info,pos in zip(infos, positions):
     y += y_advance
 
 def sc(value):
-        return (value * 256)/upem
+        return (value * font_size)/upem
 
 class Margin:
     def __init__(self, top, right, bottom, left):
@@ -192,7 +193,7 @@ del font
 
 (width,height) = (sc(max_ix - min_ix), sc(max_iy - min_iy))
 if (emulate_default):
-      (height,width) = ((font_height * 256)/upem + 32, (x * 256)/upem + 32)
+      (height,width) = ((font_height * font_size)/upem + 32, (x * font_size)/upem + 32)
 
 #####################################################################
 ### Derived from freetype-py:examples/hello-world-cairo.py
@@ -205,7 +206,7 @@ from bitmap_to_surface import make_image_surface
 from PIL import Image
 
 face = Face(sys.argv[1])
-face.set_char_size( 256*64 )
+face.set_char_size( font_size*64 )
 
 if (not wantRotate):
     Z = ImageSurface(FORMAT_A8, int(round(width+0.5)), int(round(height+0.5)))
