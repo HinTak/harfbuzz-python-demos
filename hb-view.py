@@ -217,7 +217,9 @@ ctx = Context(Z)
 if (wantRotate):
     ctx.set_matrix(Matrix(xx=0.0,xy=-1.0,yx=1.0,yy=0.0,x0=height))
 # Second pass for actual rendering
-x, y = -sc(glyph_extents[0].x_bearing + positions[0].x_offset), height + sc(min_iy)
+## x is occationally not "-sc(glyph_extents[0].x_bearing + positions[0].x_offset)":
+##     If the first character contains sub-glyphs!
+x, y = -sc(min_ix), height + sc(min_iy)
 if (emulate_default):
     x = 16
     y = sc(font_extents.asscender) + 16
