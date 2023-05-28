@@ -166,7 +166,7 @@ if (not wantTTB):
     _margin = Margin(sc(max_iy - font_extents.ascender),
                      sc(max_ix - x),
                      sc(font_extents.descender - font_extents.line_gap - min_iy),
-                     -sc(glyph_extents[0].x_bearing + positions[0].x_offset))
+                     -sc(min_ix))
 
     print("default:", sc(x) + 32, sc(font_height) + 32)
 else:
