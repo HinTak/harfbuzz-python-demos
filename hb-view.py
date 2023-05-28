@@ -165,7 +165,7 @@ if (not wantTTB):
     # default is: font_extents.ascender, x, font_extents.descender, 0
     _margin = Margin(sc(max_iy - font_extents.ascender),
                      sc(max_ix - x),
-                     sc(font_extents.descender - font_extents.line_gap - min_iy),
+                     sc(font_extents.descender - min_iy),
                      -sc(min_ix))
 
     print("default:", sc(x) + 32, sc(font_height) + 32)
