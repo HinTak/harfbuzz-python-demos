@@ -201,7 +201,7 @@ if (emulate_default):
 from freetype import *
 
 # cairo.Matrix shadows freetype.Matrix
-from cairo import Context, ImageSurface, FORMAT_A8, Matrix
+from cairo import Context, ImageSurface, FORMAT_ARGB32, Matrix
 from bitmap_to_surface import make_image_surface
 from PIL import Image
 
@@ -214,9 +214,9 @@ library = get_handle()
 FT_Property_Set( library, b"ot-svg", b"svg-hooks", byref(hooks) ) # python 3 only syntax
 
 if (not wantRotate):
-    Z = ImageSurface(FORMAT_A8, int(round(width+0.5)), int(round(height+0.5)))
+    Z = ImageSurface(FORMAT_ARGB32, int(round(width+0.5)), int(round(height+0.5)))
 else:
-    Z = ImageSurface(FORMAT_A8, int(round(height+0.5)), int(round(width+0.5)))
+    Z = ImageSurface(FORMAT_ARGB32, int(round(height+0.5)), int(round(width+0.5)))
 ctx = Context(Z)
 
 if (wantRotate):
