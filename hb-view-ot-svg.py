@@ -227,7 +227,7 @@ if (wantTTB):
     x = sc(max_ix)
     y = sc(max_iy)
 for info,pos,extent in zip(infos, positions, glyph_extents):
-    face.load_glyph(info.codepoint)
+    face.load_glyph(info.codepoint, FT_LOAD_COLOR | FT_LOAD_RENDER)
     x += sc(extent.x_bearing + pos.x_offset)
     y -= sc(extent.y_bearing + pos.y_offset)
     # cairo does not like zero-width bitmap from the space character!
