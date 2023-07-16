@@ -3,3 +3,8 @@ is consistent across rendering different glyphs.
 
 ![RSVG rendering](ftgrid-rsvg.png)
 ![SKIA rendering](ftgrid-skia.png)
+
+This seems to be a bug in rsvg-based SVG rendering:
+
+![RSVG rendering](ftgrid-Nabla-rsvg.png)
+![SKIA rendering](ftgrid-Nabla-skia.png)
