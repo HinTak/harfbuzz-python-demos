@@ -4,7 +4,7 @@ is consistent across rendering different glyphs.
 ![RSVG rendering](ftgrid-rsvg.png)
 ![SKIA rendering](ftgrid-skia.png)
 
-This seems to be a bug in rsvg-based SVG rendering:
+This seems to be a bug in rsvg-based (2.56.2) SVG rendering:
 
 ![RSVG rendering](ftgrid-Nabla-rsvg.png)
 ![SKIA rendering](ftgrid-Nabla-skia.png)
