@@ -8,3 +8,8 @@ This seems to be a bug in rsvg-based (2.56.2 and 2.56.90-12-g1b589574) SVG rende
 
 ![RSVG rendering](ftgrid-Nabla-rsvg.png)
 ![SKIA rendering](ftgrid-Nabla-skia.png)
+
+Filed as https://gitlab.gnome.org/GNOME/librsvg/-/issues/997 . Apparently it
+is due to the use of CSS `var()` to reference colors. Looks like the
+librsvg folks will try to support `var(--foo, #rrggbb)` fallbacks
+as a workaround.
