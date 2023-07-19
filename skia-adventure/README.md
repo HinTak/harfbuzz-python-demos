@@ -33,7 +33,7 @@ Skia COLRv1 to Alpha channel:
 Skia COLRv1 to Gray:
 ![Skia to Gray](ftgrid-kGray.png)
 
-## Skia COLRv1 Rendering
+## COLRv1 Glyphs vs SVG Glyphs, rendered via Skia
 
 Skia COLRv1:
 
