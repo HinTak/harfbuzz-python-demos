@@ -56,3 +56,33 @@ Skia SVG:
 Difficult to tell the difference by the naked eye. Here is the programmatic highlights (with ImageMagick's `compare`):
 
 ![Skia COLRv1](screenshots/ftgrid-diff.png)
+
+## COLRv1 palettes
+
+index 0:
+
+![palette 0](screenshots/ftgrid-palette0.png)
+
+index 1:
+
+![palette 1](screenshots/ftgrid-palette1.png)
+
+index 2:
+
+![palette 2](screenshots/ftgrid-palette2.png)
+
+index 3:
+
+![palette 3](screenshots/ftgrid-palette3.png)
+
+index 4:
+
+![palette 4](screenshots/ftgrid-palette4.png)
+
+index 5:
+
+![palette 5](screenshots/ftgrid-palette5.png)
+
+index 6:
+
+![palette 6](screenshots/ftgrid-palette6.png)
