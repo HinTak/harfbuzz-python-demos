@@ -34,4 +34,4 @@
 
 ![238](ftgrid-238.png)
 
-[270](ftgrid-270.png)
+![270](ftgrid-270.png)
