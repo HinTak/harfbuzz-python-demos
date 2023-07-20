@@ -26,6 +26,12 @@ is due to the use of CSS `var()` to reference colors. Looks like the
 librsvg folks will try to support `var(--foo, #rrggbb)` fallbacks
 as a workaround.
 
+Interestingly, [SVG Native](https://github.com/adobe/svg-native-viewer) renders it half-way.
+
+![SVG Native](../svg-native/ftgrid-4.png)
+
+More screenshots about SVG Native in [the directory above](../svg-native/).
+
 ## Skia COLRv1 Rendering
 
 Skia COLRv1:
