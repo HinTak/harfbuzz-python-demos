@@ -1,0 +1,97 @@
+diff --git a/Makefile b/Makefile
+index 3ad5891..2c1c596 100644
+--- a/Makefile
++++ b/Makefile
+@@ -150,7 +150,7 @@ else
+   COMPILE = $(CC) $(ANSIFLAGS) \
+                   $(INCLUDES:%=$I%) \
+                   $(CFLAGS) \
+-                  $(FT_DEMO_CFLAGS) -I$(TOP_DIR_2)/skia/ -DHAVE_SKIA
++                  $(FT_DEMO_CFLAGS) -I$(TOP_DIR_2)/sn/svgnative/include/ -I$(TOP_DIR_2)/sn/svgnative/skia/include/core/ -I$(TOP_DIR_2)/sn/svgnative/skia/ -DHAVE_SKIA
+ 
+ 
+   # Enable C99 for gcc to avoid warnings.
+@@ -189,10 +189,10 @@ else
+     # `FT_DEMO_LDFLAGS` has been set in `unix-cc.mk`, too.
+     override CC = $(CCraw)
+     LINK_CMD    = $(LIBTOOL) --mode=link $(CC) \
+-                  -L$(TOP_DIR_2)/skia/out/Release/ -lsvg -lskia -lskshaper -lskunicode -lGL -lfontconfig -lharfbuzz \
++                  -L$(TOP_DIR_2)/sn/svgnative/build/linux/ -lSVGNativeViewerLib -L$(TOP_DIR_2)/sn/svgnative/skia/out/Release/ -lskia -lGL -lfontconfig \
+ 	          $(subst /,$(COMPILER_SEP),$(LDFLAGS))
+     LINK_LIBS   = $(subst /,$(COMPILER_SEP),$(FTLIB) $(EFENCE)) \
+-                  -L$(TOP_DIR_2)/skia/out/Release/ -lsvg -lskia -lskshaper -lskunicode -lGL -lfontconfig -lharfbuzz \
++                  -L$(TOP_DIR_2)/sn/svgnative/build/linux/ -lSVGNativeViewerLib -L$(TOP_DIR_2)/sn/svgnative/skia/out/Release/ -lskia -lGL -lfontconfig \
+                   $(FT_DEMO_LDFLAGS)
+   else
+     LINK_CMD = $(CC) $(subst /,$(COMPILER_SEP),$(LDFLAGS))
++++ b/README.svg-native
+@@ -0,0 +1,4 @@
++To run:
++
++LD_LIBRARY_PATH=sn/svgnative/build/linux/: ./bin/.libs/ftgrid -s TrajanColor-Concept.otf
++LD_LIBRARY_PATH=sn/svgnative/build/linux/: ./bin/.libs/ftgrid -s Nabla-Regular.ttf 
+diff --git a/src/skia-port.c b/src/skia-port.c
+index d1c8b7a..e818778 100644
+--- a/src/skia-port.c
++++ b/src/skia-port.c
+@@ -38,9 +38,8 @@
+ 
+ #ifdef HAVE_SKIA
+ 
+-#include "modules/svg/include/SkSVGDOM.h"
+-#include "modules/svg/include/SkSVGNode.h"
+-#include "modules/svg/include/SkSVGRenderContext.h" // SkSVGPresentationContext
++#include "svgnative/SVGDocument.h"
++#include "svgnative/ports/skia/SkiaSVGRenderer.h"
+ #include "include/core/SkBitmap.h"
+ #include "include/core/SkCanvas.h"
+ #include "include/core/SkMatrix.h"
+@@ -186,15 +185,10 @@
+       state = &state_dummy;
+ 
+     /* Form an `sk_sp<SkSVGDOM>` by loading the SVG document. */
+-    SkMemoryStream svgmem(document->svg_document,
+-                          document->svg_document_length, false /*not copying */);
+-    sk_sp<SkSVGDOM> svg = SkSVGDOM::MakeFromStream(svgmem);
+-
+-    //svg->getRoot()->intrinsicSize();
+-    if (svg->containerSize().isEmpty()) {
+-      SkSize size = SkSize::Make(units_per_EM, units_per_EM);
+-      svg->setContainerSize(size);
+-    }
++    auto renderer = std::make_shared<SVGNative::SkiaSVGRenderer>();
++    char *s = strndup((char *)document->svg_document,
++                      document->svg_document_length);
++    auto svg = std::unique_ptr<SVGNative::SVGDocument>(SVGNative::SVGDocument::CreateSVGDocument(s, renderer));
+     // Do we care about the viewBox attribute? It is auto I think, anyway.
+ 
+     /*
+@@ -245,12 +239,12 @@
+     /* Set up a transformation matrix. */
+     recordingCanvas->concat(m);
+ 
++    renderer->SetSkCanvas(recordingCanvas);
+     /* If the document contains only one glyph, `start_glyph_id` and */
+     /* `end_glyph_id` have the same value.  Otherwise `end_glyph_id` */
+     /* is larger.                                                    */
+     if ( start_glyph_id < end_glyph_id )
+     {
+-      SkSVGPresentationContext pctx;
+       char  id[32];
+       /* Render only the element with its ID equal to `glyph<ID>`. */
+       sprintf( id, "glyph%u", slot->glyph_index );
+@@ -262,12 +256,12 @@
+        * whole. In the case of OT-SVG, there is no extra
+        * Context, so leaving it as default is fine.
+        */
+-      svg->renderNode(recordingCanvas, pctx, id);
++      svg->Render(id, svg->Width(), svg->Height());
+     }
+     else
+     {
+       /* Render the whole document */
+-      svg->render(recordingCanvas);
++      svg->Render(svg->Width(), svg->Height());
+     }
+ 
+     /* Get the bounding box of the drawing. */
