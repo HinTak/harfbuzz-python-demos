@@ -28,7 +28,7 @@ as a workaround.
 
 Interestingly, [SVG Native](https://github.com/adobe/svg-native-viewer) renders it half-way.
 
-![SVG Native](../svg-native/ftgrid-4.png)
+![SVG Native](../svg-native/ftgrid-14.png)
 
 More screenshots about SVG Native in [the directory above](../svg-native/).
 
