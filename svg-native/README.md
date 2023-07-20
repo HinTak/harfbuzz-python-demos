@@ -1,4 +1,4 @@
-[svg native viewer issue 185]https://github.com/adobe/svg-native-viewer/issues/185):
+[svg native viewer issue 185](https://github.com/adobe/svg-native-viewer/issues/185):
 
 ![0](ftgrid-0.png)
 
