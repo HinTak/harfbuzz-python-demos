@@ -1,0 +1,309 @@
+diff --git a/Makefile b/Makefile
+index 5b8325b..b7b744a 100644
+--- a/Makefile
++++ b/Makefile
+@@ -153,7 +153,7 @@ else
+   COMPILE = $(CC) $(ANSIFLAGS) \
+                   $(INCLUDES:%=$I%) \
+                   $(CFLAGS) \
+-                  $(FT_DEMO_CFLAGS)
++                  $(FT_DEMO_CFLAGS) -DHAVE_ADOBESVG -I/usr/include/cairo/ -I$(TOP_DIR_2)/svg-native-viewer/svgnative/include/
+ 
+ 
+   # Enable C99 for gcc to avoid warnings.
+@@ -192,8 +192,10 @@ else
+     # `FT_DEMO_LDFLAGS` has been set in `unix-cc.mk`, too.
+     override CC = $(CCraw)
+     LINK_CMD    = $(LIBTOOL) --mode=link $(CC) \
++                  -L$(TOP_DIR_2)/svg-native-viewer/svgnative/build/linux/ -lSVGNativeViewerLib -lcairo -ljpeg -lexpat \
+                   $(subst /,$(COMPILER_SEP),$(LDFLAGS))
+     LINK_LIBS   = $(subst /,$(COMPILER_SEP),$(FTLIB) $(EFENCE)) \
++                  -L$(TOP_DIR_2)/svg-native-viewer/svgnative/build/linux/ -lSVGNativeViewerLib -lcairo -ljpeg -lexpat \
+                   $(FT_DEMO_LDFLAGS)
+   else
+     LINK_CMD = $(CC) $(subst /,$(COMPILER_SEP),$(LDFLAGS))
+diff --git a/README.Adobe-SVG-Native-Cairo b/README.Adobe-SVG-Native-Cairo
+new file mode 100644
+index 0000000..9e64a93
+--- /dev/null
++++ b/README.Adobe-SVG-Native-Cairo
+@@ -0,0 +1,40 @@
++CC=c++ ./configure --with-librsvg=no
++
++Building svg-native-viewer:
++===========================
++
++build static library with (without "-DSHARED=ON" on cmake):
++
++git submodule update --init
++cd svgnative/
++    cmake -Bbuild/linux -H. -DLIB_ONLY=ON -DPLATFORM_XML=ON -DCAIRO=ON -DCMAKE_CXX_FLAGS="-I`pwd`/include/svgnative/"
++    cd build/linux/
++        make
++
++Apply small change:
++
++diff --git a/svgnative/include/svgnative/SVGRenderer.h b/svgnative/include/svgnative/SVGRenderer.h
++index aa09bb4..1745093 100644
++--- a/svgnative/include/svgnative/SVGRenderer.h
+++++ b/svgnative/include/svgnative/SVGRenderer.h
++@@ -24,6 +24,7 @@ governing permissions and limitations under the License.
++ #include <string>
++ #include <tuple>
++ #include <vector>
+++#include <cstdint>
++ 
++ namespace SVGNative
++ {
++---
++
++This works with:
++
++commit ab9ea1d48b0ff055c2fb063ae4c68edafce5b7c5 (origin/main, origin/HEAD)
++Author: tushar <tusharjinda@adobe.com>
++Date:   Thu Mar 23 17:07:26 2023 +0530
++
++    update only boost submodule
++
++---
++
++Then just build ft2-demo as normal.
+diff --git a/src/rsvg-port.c b/src/rsvg-port.c
+index 7a8bb9a..3cc58e2 100644
+--- a/src/rsvg-port.c
++++ b/src/rsvg-port.c
+@@ -19,10 +19,9 @@
+ #include <ft2build.h>
+ #include <freetype/otsvg.h>
+ 
+-#ifdef HAVE_LIBRSVG
++#ifdef HAVE_ADOBESVG
+ 
+ #include <cairo.h>
+-#include <librsvg/rsvg.h>
+ #include <stdlib.h>
+ #include <math.h>
+ 
+@@ -160,20 +159,6 @@
+     FT_UShort  end_glyph_id   = document->end_glyph_id;
+     FT_UShort  start_glyph_id = document->start_glyph_id;
+ 
+-    /* Librsvg variables. */
+-    GError   *gerror = NULL;
+-    gboolean  ret;
+-
+-    gboolean  out_has_width;
+-    gboolean  out_has_height;
+-    gboolean  out_has_viewbox;
+-
+-    RsvgHandle         *handle;
+-    RsvgLength         out_width;
+-    RsvgLength         out_height;
+-    RsvgRectangle      out_viewbox;
+-    RsvgDimensionData  dimension_svg;
+-
+     cairo_t        *rec_cr;
+     cairo_matrix_t  transform_matrix;
+ 
+@@ -207,74 +192,16 @@
+       state = &state_dummy;
+ 
+     /* Form an `RsvgHandle` by loading the SVG document. */
+-    handle = rsvg_handle_new_from_data( document->svg_document,
+-                                        document->svg_document_length,
+-                                        &gerror );
++    auto renderer = std::make_shared<SVGNative::CairoSVGRenderer>();
++    char *s = strndup((char *)document->svg_document,
++                      document->svg_document_length);
++    auto handle = std::unique_ptr<SVGNative::SVGDocument>(SVGNative::SVGDocument::CreateSVGDocument(s, renderer));
+     if ( handle == NULL )
+     {
+       error = FT_Err_Invalid_SVG_Document;
+       goto CleanLibrsvg;
+     }
+ 
+-    /* Get attributes like `viewBox` and `width`/`height`. */
+-    rsvg_handle_get_intrinsic_dimensions( handle,
+-                                          &out_has_width,
+-                                          &out_width,
+-                                          &out_has_height,
+-                                          &out_height,
+-                                          &out_has_viewbox,
+-                                          &out_viewbox );
+-
+-    /*
+-     * Figure out the units in the EM square in the SVG document.  This is
+-     * specified by the `ViewBox` or the `width`/`height` attributes, if
+-     * present, otherwise it should be assumed that the units in the EM
+-     * square are the same as in the TTF/CFF outlines.
+-     *
+-     * TODO: I'm not sure what the standard says about the situation if
+-     * `ViewBox` as well as `width`/`height` are present; however, I've
+-     * never seen that situation in real fonts.
+-     */
+-    if ( out_has_viewbox == TRUE )
+-    {
+-      dimension_svg.width  = (int)out_viewbox.width; /* XXX rounding? */
+-      dimension_svg.height = (int)out_viewbox.height;
+-    }
+-    else if ( out_has_width == TRUE && out_has_height == TRUE )
+-    {
+-      dimension_svg.width  = (int)out_width.length; /* XXX rounding? */
+-      dimension_svg.height = (int)out_height.length;
+-
+-      /*
+-       * librsvg 2.53+ behavior, on SVG doc without explicit width/height.
+-       * See `rsvg_handle_get_intrinsic_dimensions` section in
+-       * the `librsvg/rsvg.h` header file.
+-       */
+-      if ( out_width.length  == 1 &&
+-           out_height.length == 1 )
+-      {
+-        dimension_svg.width  = units_per_EM;
+-        dimension_svg.height = units_per_EM;
+-      }
+-    }
+-    else
+-    {
+-      /*
+-       * If neither `ViewBox` nor `width`/`height` are present, the
+-       * `units_per_EM` in SVG coordinates must be the same as
+-       * `units_per_EM` of the TTF/CFF outlines.
+-       *
+-       * librsvg up to 2.52 behavior, on SVG doc without explicit
+-       * width/height.
+-       */
+-      dimension_svg.width  = units_per_EM;
+-      dimension_svg.height = units_per_EM;
+-    }
+-
+-    /* Scale factors from SVG coordinates to the needed output size. */
+-    x_svg_to_out = (double)metrics.x_ppem / dimension_svg.width;
+-    y_svg_to_out = (double)metrics.y_ppem / dimension_svg.height;
+-
+     /*
+      * Create a cairo recording surface.  This is done for two reasons.
+      * Firstly, it is required to get the bounding box of the final drawing
+@@ -288,6 +215,10 @@
+ 
+     rec_cr = cairo_create( state->rec_surface );
+ 
++    /* Scale factors from SVG coordinates to the needed output size. */
++    x_svg_to_out = (double)metrics.x_ppem / units_per_EM;
++    y_svg_to_out = (double)metrics.y_ppem / units_per_EM;
++
+     /*
+      * We need to take into account any transformations applied.  The end
+      * user who applied the transformation doesn't know the internal details
+@@ -302,9 +233,9 @@
+     yy =  (double)document->transform.yy / ( 1 << 16 );
+ 
+     x0 =  (double)document->delta.x / 64 *
+-            dimension_svg.width / metrics.x_ppem;
++            handle->Width() / metrics.x_ppem;
+     y0 = -(double)document->delta.y / 64 *
+-            dimension_svg.height / metrics.y_ppem;
++            handle->Height() / metrics.y_ppem;
+ 
+     /* Cairo stores both transformation and translation in one matrix. */
+     transform_matrix.xx = xx;
+@@ -320,46 +251,21 @@
+     /* Set up a transformation matrix. */
+     cairo_transform( rec_cr, &transform_matrix );
+ 
++    renderer->SetCairo(rec_cr);
+     /* If the document contains only one glyph, `start_glyph_id` and */
+     /* `end_glyph_id` have the same value.  Otherwise `end_glyph_id` */
+     /* is larger.                                                    */
+     if ( start_glyph_id < end_glyph_id )
+     {
+       /* Render only the element with its ID equal to `glyph<ID>`. */
+-      sprintf( str, "#glyph%u", slot->glyph_index );
++      sprintf( str, "glyph%u", slot->glyph_index );
+       id = str;
++      handle->Render(id, handle->Width(), handle->Height());
+     }
+     else
+     {
+       /* NULL = Render the whole document */
+-      id = NULL;
+-    }
+-
+-#if LIBRSVG_CHECK_VERSION( 2, 52, 0 )
+-    {
+-      RsvgRectangle  viewport =
+-      {
+-        .x = 0,
+-        .y = 0,
+-        .width  = (double)dimension_svg.width,
+-        .height = (double)dimension_svg.height,
+-      };
+-
+-
+-      ret = rsvg_handle_render_layer( handle,
+-                                      rec_cr,
+-                                      id,
+-                                      &viewport,
+-                                      NULL );
+-    }
+-#else
+-    ret = rsvg_handle_render_cairo_sub( handle, rec_cr, id );
+-#endif
+-
+-    if ( ret == FALSE )
+-    {
+-      error = FT_Err_Invalid_SVG_Document;
+-      goto CleanCairo;
++      handle->Render(handle->Width(), handle->Height());
+     }
+ 
+     /* Get the bounding box of the drawing. */
+@@ -428,7 +334,6 @@
+ 
+   CleanLibrsvg:
+     /* Destroy the handle. */
+-    g_object_unref( handle );
+ 
+     return error;
+   }
+@@ -441,11 +346,11 @@
+                        (SVG_Lib_Preset_Slot_Func)rsvg_port_preset_slot
+                      };
+ 
+-#else /* !HAVE_LIBRSVG */
++#else /* !HAVE_ADOBESVG */
+ 
+   SVG_RendererHooks  rsvg_hooks = { NULL, NULL, NULL, NULL };
+ 
+-#endif /* !HAVE_LIBRSVG */
++#endif /* !HAVE_ADOBESVG */
+ 
+ 
+ /* End */
+diff --git a/src/rsvg-port.h b/src/rsvg-port.h
+index 073fd5e..188db24 100644
+--- a/src/rsvg-port.h
++++ b/src/rsvg-port.h
+@@ -22,10 +22,11 @@
+ #include <ft2build.h>
+ #include <freetype/otsvg.h>
+ 
+-#ifdef HAVE_LIBRSVG
++#ifdef HAVE_ADOBESVG
+ 
+ #include <cairo.h>
+-#include <librsvg/rsvg.h>
++#include "svgnative/SVGDocument.h"
++#include "svgnative/ports/cairo/CairoSVGRenderer.h"
+ #include <freetype/freetype.h>
+ 
+ 
+@@ -61,7 +62,7 @@
+                          FT_Bool       cache,
+                          FT_Pointer   *state );
+ 
+-#endif /* HAVE_LIBRSVG */
++#endif /* HAVE_ADOBESVG */
+ 
+ 
+   extern SVG_RendererHooks  rsvg_hooks;
