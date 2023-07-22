@@ -334,7 +334,7 @@ index 88edbec..ee6a937 100644
          {
            FT_String  str[64] = "ftview (FreeType) ";
 diff --git a/src/rsvg-port.c b/src/rsvg-port.c
-index 959afe9..785cc93 100644
+index 7a8bb9a..9f1c190 100644
 --- a/src/rsvg-port.c
 +++ b/src/rsvg-port.c
 @@ -22,7 +22,12 @@
@@ -444,7 +444,7 @@ index 959afe9..785cc93 100644
      /* Get attributes like `viewBox` and `width`/`height`. */
      rsvg_handle_get_intrinsic_dimensions( handle,
                                            &out_has_width,
-@@ -280,6 +301,10 @@
+@@ -274,6 +295,10 @@
      /* Scale factors from SVG coordinates to the needed output size. */
      x_svg_to_out = (double)metrics.x_ppem / dimension_svg.width;
      y_svg_to_out = (double)metrics.y_ppem / dimension_svg.height;
@@ -454,8 +454,8 @@ index 959afe9..785cc93 100644
 +#endif
  
      /*
-     if ((out_has_viewbox != TRUE) &&
-@@ -316,9 +341,18 @@
+      * Create a cairo recording surface.  This is done for two reasons.
+@@ -302,9 +327,18 @@
      yy =  (double)document->transform.yy / ( 1 << 16 );
  
      x0 =  (double)document->delta.x / 64 *
@@ -474,7 +474,7 @@ index 959afe9..785cc93 100644
  
      /* Cairo stores both transformation and translation in one matrix. */
      transform_matrix.xx = xx;
-@@ -334,21 +368,34 @@
+@@ -320,21 +354,34 @@
      /* Set up a transformation matrix. */
      cairo_transform( rec_cr, &transform_matrix );
  
@@ -509,7 +509,7 @@ index 959afe9..785cc93 100644
  #if LIBRSVG_CHECK_VERSION( 2, 52, 0 )
      {
        RsvgRectangle  viewport =
-@@ -375,6 +422,7 @@
+@@ -361,6 +408,7 @@
        error = FT_Err_Invalid_SVG_Document;
        goto CleanCairo;
      }
@@ -517,7 +517,7 @@ index 959afe9..785cc93 100644
  
      /* Get the bounding box of the drawing. */
      cairo_recording_surface_ink_extents( state->rec_surface, &x, &y,
-@@ -450,13 +498,19 @@
+@@ -428,13 +476,19 @@
  
    CleanLibrsvg:
      /* Destroy the handle. */
