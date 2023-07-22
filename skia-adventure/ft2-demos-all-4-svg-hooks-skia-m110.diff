@@ -1,3 +1,5 @@
+diff --git a/Makefile b/Makefile
+index cded506..0843d78 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -145,10 +148,15 @@ else
@@ -64,7 +66,7 @@
    ####################################################################
 diff --git a/README.Adobe-SVG-Native-Cairo b/README.Adobe-SVG-Native-Cairo
 new file mode 100644
-index 0000000..7ace917
+index 0000000..896b3a0
 --- /dev/null
 +++ b/README.Adobe-SVG-Native-Cairo
 @@ -0,0 +1,42 @@
@@ -332,7 +334,7 @@ index 88edbec..ee6a937 100644
          {
            FT_String  str[64] = "ftview (FreeType) ";
 diff --git a/src/rsvg-port.c b/src/rsvg-port.c
-index 959afe9..2a4ae14 100644
+index 959afe9..785cc93 100644
 --- a/src/rsvg-port.c
 +++ b/src/rsvg-port.c
 @@ -22,7 +22,12 @@
@@ -429,7 +431,7 @@ index 959afe9..2a4ae14 100644
 +#else
 +    auto renderer = std::make_shared<SVGNative::CairoSVGRenderer>();
 +    char *s = strndup((char *)document->svg_document,
-+                      document->svg_document_length);
++                      document->svg_document_length); // careful here, svg documents could have NULLs - see svg-native-viewer#164
 +    auto handle = std::unique_ptr<SVGNative::SVGDocument>(SVGNative::SVGDocument::CreateSVGDocument(s, renderer));
 +#endif
      if ( handle == NULL )
@@ -578,7 +580,7 @@ index 073fd5e..d44830a 100644
  #endif /* RSVG_PORT_H */
 diff --git a/src/skia-port.c b/src/skia-port.c
 new file mode 100644
-index 0000000..4dc2994
+index 0000000..f4c9a64
 --- /dev/null
 +++ b/src/skia-port.c
 @@ -0,0 +1,390 @@
@@ -781,7 +783,7 @@ index 0000000..4dc2994
 +#ifdef USE_ADOBE
 +    auto renderer = std::make_shared<SVGNative::SkiaSVGRenderer>();
 +    char *s = strndup((char *)document->svg_document,
-+                      document->svg_document_length);
++                      document->svg_document_length); // careful here, svg documents could have NULLs - see svg-native-viewer#164
 +    auto svg = std::unique_ptr<SVGNative::SVGDocument>(SVGNative::SVGDocument::CreateSVGDocument(s, renderer));
 +#else
 +    SkMemoryStream svgmem(document->svg_document,
