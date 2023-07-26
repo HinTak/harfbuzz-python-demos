@@ -121,6 +121,47 @@ index 0000000..8cbd8ec
 +---
 +
 +Then just build ft2-demo as normal.
+diff --git a/README.skia b/README.skia
+new file mode 100644
+index 0000000..862648c
+--- /dev/null
++++ b/README.skia
+@@ -0,0 +1,35 @@
++Using Skia instead of Rsvg for rendering OT-SVG
++===============================================
++
++Follow instructions at:
++    https://github.com/HinTak/skia-building-fun/
++to build Skia m116.
++
++You should get a "skia-m116-bin.zip" at the end.
++
++skia-python bundles m87; m98 introduces COLRv1, and m103 introduces
++OT-SVG. For this purpose, m103+ is the minimum.
++
++
++PREPARATION:
++
++    mkdir skia/
++    pushd skia/
++         unzip "<downloaded>"/skia-m116-bin.zip
++    popd
++
++BUILDING:
++
++Run:
++   CC=clang++ ./configure
++
++in freetype2. Using a C++ compiler is necessary (Skia is heavy-duty
++c++ code). Use the same c++ compiler for both skia and ft2-demo.
++In the case of https://github.com/HinTak/skia-building-fun/, clang++.
++Mix-and-match results in segfaults at runtime.
++
++Then just build as normal.
++
++There is a "-s <N>" switch for both ftview and ftgrid to use skia
++at launch time, instead of rsvg. It is not possible to dynamically
++re-render without restart. Limited by current design.
 diff --git a/meson.build b/meson.build
 index 14409a3..a1d488f 100644
 --- a/meson.build
