@@ -66,24 +66,33 @@ index cded506..0843d78 100644
    ####################################################################
 diff --git a/README.Adobe-SVG-Native-Cairo b/README.Adobe-SVG-Native-Cairo
 new file mode 100644
-index 0000000..896b3a0
+index 0000000..8cbd8ec
 --- /dev/null
 +++ b/README.Adobe-SVG-Native-Cairo
-@@ -0,0 +1,42 @@
+@@ -0,0 +1,51 @@
 +CC=c++ ./configure
 +
 +Building svg-native-viewer:
 +===========================
 +
-+build static library with (without "-DSHARED=ON" on cmake):
++build shared library with:
 +
 +git submodule update --init
 +cd svgnative/
-+    cmake -Bbuild/linux -H. -DLIB_ONLY=ON -DPLATFORM_XML=ON -DCAIRO=ON \
++    cmake -Bbuild/linux -H. -DSHARED=ON -DLIB_ONLY=ON -DPLATFORM_XML=ON -DCAIRO=ON \
 +    -DSKIA=ON -DSKIA_LIBRARY_PATH=`pwd`/../../skia/out/Shared/libskia.so \
-+    -DSKIA_SOURCE_DIR=`pwd`/../../skia/ -DCMAKE_CXX_FLAGS="-I`pwd`/include/svgnative/" -DCMAKE_POSITION_INDEPENDENT_CODE=ON
++    -DSKIA_SOURCE_DIR=`pwd`/../../skia/ -DCMAKE_CXX_FLAGS="-I`pwd`/include/svgnative/" \
++    -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DCMAKE_CXX_COMPILER=/usr/bin/clang++
 +    cd build/linux/
 +        make
++
++Note it depends on skia by rpath:
++
++        chrpath -l libSVGNativeViewerLib.so
++
++For some usage, it might be advisable to delete it:
++
++        chrpath -d libSVGNativeViewerLib.so
 +
 +Apply small change:
 +
