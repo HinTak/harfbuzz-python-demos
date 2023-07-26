@@ -1,0 +1,30 @@
+  Static    Shared             : SVG Native
+===============================================
+   36680     36680 Jun 27 01:00 /usr/bin/ftbench
+   15800     15800 Jun 27 01:00 /usr/bin/ftchkwd
+  679368     90944 Jun 27 01:00 /usr/bin/ftdiff
+   48696     48696 Jun 27 01:00 /usr/bin/ftdump
+  662920     82760 Jun 27 01:00 /usr/bin/ftgamma
+  787768    161768 Jun 27 01:00 /usr/bin/ftgrid
+   28152     28152 Jun 27 01:00 /usr/bin/ftlint
+   15904     15896 Jun 27 01:00 /usr/bin/ftmemchk
+  671080     86848 Jun 27 01:00 /usr/bin/ftmulti
+   15792     15800 Jun 27 01:00 /usr/bin/ftpatchk
+  750968    132912 Jun 27 01:00 /usr/bin/ftstring
+   15856     15856 Jun 27 01:00 /usr/bin/fttimer
+   24400     24400 Jun 27 01:00 /usr/bin/ftvalid
+  771352    161840 Jun 27 01:00 /usr/bin/ftview
+ 6863136   6863240 Jun 27 01:00 /usr/lib64/libskia.so
+  380352    380344 Jun 27 01:00 /usr/lib64/libskottie.so
+   23840     23840 Jun 27 01:00 /usr/lib64/libskparagraph.so
+   14984     14984 Jun 27 01:00 /usr/lib64/libsksg.so
+   58584     58584 Jun 27 01:00 /usr/lib64/libskshaper.so
+   15128     15136 Jun 27 01:00 /usr/lib64/libsktext.so
+   37056     37056 Jun 27 01:00 /usr/lib64/libskunicode.so
+  252840    252840 Jun 27 01:00 /usr/lib64/libsvg.so
+       -    799712 Jun 27 01:00 /usr/lib64/libSVGNativeViewerLib.so
+           
+Size        : 155612541      Build Date  : Sat 15 Jul 2023 01:37:36 BST - Skia
+Size        : 159360325      Build Date  : Sat 22 Jul 2023 08:14:06 BST - COLRv1 ( + 4 hooks )
+Size        :  12393889      Build Date  : Mon 24 Jul 2023 01:21:26 BST - COLRv1 + shared Skia
+Size        :   9587367      Build Date  : Wed 26 Jul 2023 04:44:41 BST - COLRv1 + shared mod'ed Skia and shared SVG Native 
