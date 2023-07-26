@@ -33,6 +33,9 @@ Interestingly, [SVG Native](https://github.com/adobe/svg-native-viewer) renders 
 
 More screenshots about SVG Native in [the directory above](../svg-native/).
 
+Inkscape also have problems with this SVG ( https://gitlab.com/inkscape/inbox/-/issues/8857 , moved from
+https://gitlab.com/inkscape/inkscape/-/issues/4423 )
+
 ## Skia COLRv1 Rendering
 
 Skia COLRv1:
