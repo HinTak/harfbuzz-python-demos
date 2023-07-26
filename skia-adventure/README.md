@@ -27,6 +27,7 @@ librsvg folks will try to support `var(--foo, #rrggbb)` fallbacks
 as a workaround.
 
 Interestingly, [SVG Native](https://github.com/adobe/svg-native-viewer) renders it half-way.
+( filed as https://github.com/adobe/svg-native-viewer/issues/185 )
 
 ![SVG Native](../svg-native/ftgrid-14.png)
 
