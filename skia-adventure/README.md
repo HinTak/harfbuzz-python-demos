@@ -1,3 +1,6 @@
+This is a patch to adds 3 other OT-SVG hooks to FreeType2-demos. There is an extension on top of it, to
+add COLRv1 rendering, too.
+
 ## Librsvg/Cairo SVG Rendering vs SKia SVG Rendering
 
 See the top of the RSVG rendering. There are a few very pale pixels over the bound box. This difference
