@@ -200,51 +200,60 @@ if (emulate_default):
 
 from freetype import *
 
-# cairo.Matrix shadows freetype.Matrix
-from cairo import Context, ImageSurface, FORMAT_ARGB32, Matrix
-from bitmap_to_surface import make_image_surface
-from PIL import Image
+from skia_glfw_module import glfw_window, skia_surface
 
 face = Face(sys.argv[1])
 face.set_char_size( font_size*64 )
 
 from skia_ot_svg_module import hooks
+import skia
+from skia import ImageInfo, ColorType, AlphaType
+import glfw
 
 library = get_handle()
 FT_Property_Set( library, b"ot-svg", b"svg-hooks", byref(hooks) ) # python 3 only syntax
 
 if (not wantRotate):
-    Z = ImageSurface(FORMAT_ARGB32, int(round(width+0.5)), int(round(height+0.5)))
+    WIDTH, HEIGHT = int(round(width+0.5)), int(round(height+0.5))
 else:
-    Z = ImageSurface(FORMAT_ARGB32, int(round(height+0.5)), int(round(width+0.5)))
-ctx = Context(Z)
+    WIDTH, HEIGHT = int(round(height+0.5)), int(round(width+0.5))
 
-if (wantRotate):
-    ctx.set_matrix(Matrix(xx=0.0,xy=-1.0,yx=1.0,yy=0.0,x0=height))
-# Second pass for actual rendering
-## x is occationally not "-sc(glyph_extents[0].x_bearing + positions[0].x_offset)":
-##     If the first character contains sub-glyphs!
-x, y = -sc(min_ix), height + sc(min_iy)
-if (emulate_default):
-    x = 16
-    y = sc(font_extents.asscender) + 16
-if (wantTTB):
-    x = sc(max_ix)
-    y = sc(max_iy)
-for info,pos,extent in zip(infos, positions, glyph_extents):
-    face.load_glyph(info.codepoint, FT_LOAD_COLOR | FT_LOAD_RENDER)
-    x += sc(extent.x_bearing + pos.x_offset)
-    y -= sc(extent.y_bearing + pos.y_offset)
-    # cairo does not like zero-width bitmap from the space character!
-    if (face.glyph.bitmap.width > 0):
-        glyph_surface = make_image_surface(face.glyph.bitmap)
-        ctx.set_source_surface(glyph_surface, x, y)
-        ctx.paint()
-    x += sc(pos.x_advance - extent.x_bearing - pos.x_offset)
-    y -= sc(pos.y_advance - extent.y_bearing - pos.y_offset)
-Z.flush()
-Z.write_to_png("hb-view.png")
-Image.open("hb-view.png").show()
-
+with glfw_window(WIDTH, HEIGHT) as window:
+    if (wantRotate):
+        ctx.set_matrix(Matrix(xx=0.0,xy=-1.0,yx=1.0,yy=0.0,x0=height))
+    x, y = -sc(min_ix), height + sc(min_iy)
+    if (emulate_default):
+        x = 16
+        y = sc(font_extents.asscender) + 16
+    if (wantTTB):
+        x = sc(max_ix)
+        y = sc(max_iy)
+    with skia_surface(window) as surface:
+        with surface as canvas:
+            for info,pos,extent in zip(infos, positions, glyph_extents):
+                face.load_glyph(info.codepoint, FT_LOAD_COLOR | FT_LOAD_RENDER)
+                x += sc(extent.x_bearing + pos.x_offset)
+                y -= sc(extent.y_bearing + pos.y_offset)
+                if (face.glyph.bitmap.width > 0):
+                    glyphBitmap = skia.Bitmap()
+                    bitmap = face.glyph.bitmap
+                    glyphBitmap.setInfo(ImageInfo.Make(bitmap.width, bitmap.rows,
+                                                       ColorType.kBGRA_8888_ColorType,
+                                                       AlphaType.kPremul_AlphaType),
+                                        bitmap.pitch)
+                    glyphBitmap.setPixels(pythonapi.PyMemoryView_FromMemory(cast(bitmap._FT_Bitmap.buffer, c_char_p),
+                                                                            bitmap.rows * bitmap.pitch,
+                                                                            0x200), # Read-Write
+                                          )
+                    canvas.drawBitmap(glyphBitmap, x, y)
+                x += sc(pos.x_advance - extent.x_bearing - pos.x_offset)
+                y -= sc(pos.y_advance - extent.y_bearing - pos.y_offset)
+        surface.flushAndSubmit()
+        image = surface.makeImageSnapshot()
+        #image.save("hb-view-ot-svg-skia-GL.png", skia.kPNG) # why does it shows RuntimeError?
+    glfw.swap_buffers(window)
+    while (glfw.get_key(window, glfw.KEY_ESCAPE) != glfw.PRESS
+           and not glfw.window_should_close(window)):
+        glfw.wait_events()
 ### Derived from freetype-py:examples/hello-world-cairo.py ends.
 #####################################################################
