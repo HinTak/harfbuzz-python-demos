@@ -208,7 +208,7 @@ from PIL import Image
 face = Face(sys.argv[1])
 face.set_char_size( font_size*64 )
 
-from otsvg import hooks
+from skia_ot_svg_module import hooks
 
 library = get_handle()
 FT_Property_Set( library, b"ot-svg", b"svg-hooks", byref(hooks) ) # python 3 only syntax
