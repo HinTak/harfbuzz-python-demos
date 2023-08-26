@@ -250,7 +250,7 @@ with glfw_window(WIDTH, HEIGHT) as window:
                 y -= sc(pos.y_advance - extent.y_bearing - pos.y_offset)
         surface.flushAndSubmit()
         image = surface.makeImageSnapshot()
-        #image.save("hb-view-ot-svg-skia-GL.png", skia.kPNG) # why does it shows RuntimeError?
+        image.save("hb-view-ot-svg-skia-GL.png", skia.kPNG)
     glfw.swap_buffers(window)
     while (glfw.get_key(window, glfw.KEY_ESCAPE) != glfw.PRESS
            and not glfw.window_should_close(window)):
