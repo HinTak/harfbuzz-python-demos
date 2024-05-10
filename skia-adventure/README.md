@@ -1,5 +1,6 @@
-This is a patch to adds 3 other OT-SVG hooks to FreeType2-demos. There is an extension on top of it, to
-add COLRv1 rendering, too.
+The skia-enhanced freetype2-demos now has its own [repo](https://github.com/HinTak/freetype2-demos-skia).
+There is an extension on top of it, to add COLRv1 rendering, too. This page is mostly historical, except
+the svg-native viewer issue.
 
 ## Librsvg/Cairo SVG Rendering vs SKia SVG Rendering
 
@@ -27,7 +28,7 @@ Skia:
 Filed as https://gitlab.gnome.org/GNOME/librsvg/-/issues/997 . Apparently it
 is due to the use of CSS `var()` to reference colors. Looks like the
 librsvg folks will try to support `var(--foo, #rrggbb)` fallbacks
-as a workaround.
+as a workaround. The bug was fixed in 2.57.1, and verified to be so.
 
 Interestingly, [SVG Native](https://github.com/adobe/svg-native-viewer) renders it half-way.
 ( filed as https://github.com/adobe/svg-native-viewer/issues/185 )
