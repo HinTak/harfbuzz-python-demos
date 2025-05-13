@@ -1,3 +1,7 @@
+This repository is a Python-based project that re-implements the hb-view tool from the HarfBuzz library. HarfBuzz is a popular text-shaping engine used in typography and font rendering.
+
+- Purpose: Provides tools and demonstrations related to HarfBuzz, particularly focusing on replicating the functionality of the hb-view tool, which is used for visualizing shaped text.
+
 # HarfBuzz python demos
 
 This project currently has one script: `hb-view.py`, a re-implementation of some of the functionalilty of upstream HarfBuzz's C++
